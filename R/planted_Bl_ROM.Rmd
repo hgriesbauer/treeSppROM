@@ -1,0 +1,91 @@
+---
+title: "Preliminary information on subalpine fir in the Omineca"
+author: "Hardy Griesbauer"
+date: "09/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyr)
+library(ggplot2)
+
+
+load("../data/romSpecies.RData")
+
+
+```
+### Some very preliminary historical data of SAF in the Omineca Region
+Below are a few graphs from the RESULTS Species Monitoring planting, billed volume, and regenerated cover for SAF in the Omineca Region.  These are just preliminary!  I haven't had a chance to closely examine the data yet for errors.
+
+### File locations
+All files and data are stored here: https://github.com/hgriesbauer/treeSppROM
+
+### Data used for these analyses
+I used the "Species Monitoring" datasets that were compiled using RESULTS data in February 2019.  I used these datasets to produce many of the figures for my presentation on Douglas-fir at NSC 2019.  For some reason, the link to the Species Monitoring website is broken.  I will ask around to find the new URL so we can get more recent data (althought I imagine data current to February 2019 should suffice for now!).
+
+### Subalpine fir planting in the Omineca Region
+First, let's look at historical planting of SAF.
+
+```{r}
+romSpecies$plant %>% 
+  filter(SPECIES_CATEGORY=="BL") %>% 
+  group_by(DISTURBANCE_START_YEAR) %>% # Unfortunately, they only report disturbance year?  
+  summarise(AREA=sum(SUMOFPRORATE_AREA)) %>%  # summarize area planted
+  ggplot(aes(x=DISTURBANCE_START_YEAR,y=AREA))+ # start plotting call
+  geom_bar(stat="Identity")+ # Call for a bar plot
+  geom_smooth(method = "loess", se=F,span=0.3)+ # Add smoothed line
+  ylab("Prorated area (ha)")+ # Set y-axis label
+  xlab("Disturbance start year")+ # Set x-axis label
+  ggtitle(label="Area planted with SAF by disturbance year", subtitle = "Note that area is prorated")
+  
+```
+
+I believe prorated area = total polygon area * species %
+
+*****
+### SAF billed  volume by year
+```{r}
+
+romSpecies$vol %>% 
+  filter(SPECIES_CATEGORY=="BA") %>%  # Filter for 'BA' 
+  filter(BILLING_YEAR<2019) %>% # Remove 2019 from dataset, because year is incomplete
+  group_by(BILLING_YEAR) %>% # Unfortunately, they only report disturbance year?  
+  summarise(VOL=sum(SPP_VOL)) %>%  # summarize area planted
+  ggplot(aes(x=BILLING_YEAR,y=VOL))+ # start plotting call
+  geom_bar(stat="Identity")+ # Call for a bar plot
+  geom_smooth(method = "loess", se=F,span=0.3)+ # Add smoothed line
+  ylab("Volume (m^3)")+ # Set y-axis label
+  xlab("Billing year")+ # Set x-axis label
+  ggtitle(label="Billed SAF volume by billing year", subtitle = "Omineca Region")
+
+
+```
+
+This graph seems strange, and tells me the data need to examined more closely.  Could this perhaps reflect a shift from MPB salvage to other forest types ~ 2009?  I will look into the actual Harvest Billing Dataset for more information.  Would be good to look at annual reports too to see if they show a similar trend.
+
+### Regenerated layer forest cover
+The Species Monitoring datasets also have prorated areas for each species in regenerated areas, by BGC unit and Management Unit Type (TSA, TFL, TS Block, etc...).  I wasn't able to talk with someone about how this is calculated, but I assume it's from silviculture labels?  Without knowing how these data are generated, we probably don't want to show them, but for interests' sake, I produced one graph.  
+
+As an example, we can look at SAF area by Disturbance year:
+
+```{r}
+
+romSpecies$regen %>% 
+  filter(DESCRIPTION=="Balsam") %>%  # Filter for 'BA' 
+  filter(DISTURBANCE_START_YEAR<2019) %>% # Remove 2019 from dataset, because year is incomplete
+  group_by(DISTURBANCE_START_YEAR) %>% # Unfortunately, they only report disturbance year?  
+  summarise(AREA=sum(SUMOFPRORATED_SPP_AREA)) %>%  # summarize area regenerated
+  ggplot(aes(x=DISTURBANCE_START_YEAR,y=AREA))+ # start plotting call
+  geom_bar(stat="Identity")+ # Call for a bar plot
+  geom_smooth(method = "loess", se=F,span=0.3)+ # Add smoothed line
+  ylab("Prorated Area (ha)")+ # Set y-axis label
+  xlab("Disturbance year")+ # Set x-axis label
+  ggtitle(label="SAF prorated regenerated area by year", subtitle = "Across all BGC units, Omineca Region")
+
+
+
+```
+
+It looks like the dataset is missing data for years after around 2010.  We see the same downward trend as planting and billed volume from ~1995 to 2010.  There was likely an increase in Bl regenerated area after 2010, but the data are likely incomplete.  
