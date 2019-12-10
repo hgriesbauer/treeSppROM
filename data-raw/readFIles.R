@@ -72,7 +72,11 @@ plantROM <- read_csv("data-raw/RESULTS_planting_report_December2_2019.csv")
     # pivot longer to allow for summaries
     pivot_longer(
       cols=starts_with("Species_"),
+<<<<<<< HEAD
       names_to="SPECIES_RANK",
+=======
+      names_to="species_rank",
+>>>>>>> a52f0a4fe113d31b4b2e0730a4b06298e2080e03
       values_to = "value") %>%
     
     # Remove rows with NA values 
@@ -91,10 +95,15 @@ plantROM <- read_csv("data-raw/RESULTS_planting_report_December2_2019.csv")
     # adjust well spaced stems based on species percentages
     silvSPP%<>%
       mutate(WSH=round(WS*as.numeric(SPECIES_PCT)/100,0)) %>% 
+<<<<<<< HEAD
       select(-WS,-WS2,-value) %>%  # get rid of original WS and WS2 columns, they are now in WSH
       select(1:9,starts_with("SPECIES"),WSH,everything())
     
     save(silvSPP,file="data/silvBL_ROM.RData")
+=======
+      select(-WS,-WS2) # get rid of original WS and WS2 columns, they are now in WSH
+  
+>>>>>>> a52f0a4fe113d31b4b2e0730a4b06298e2080e03
   
   ## TREE SPECIES REPORT FROM RESULTS
   treeSPP<-read_csv("data-raw/RESULTS_species_report_December2_2019.csv")
