@@ -2,7 +2,9 @@
 title: "Preliminary information on subalpine fir in the Omineca"
 author: "Hardy Griesbauer"
 date: "09/12/2019"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -10,9 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyr)
 library(ggplot2)
+library(here)
+library(dplyr)
 
 
-load("../data/romSpecies.RData")
+load(here("data","romSpecies.RData"))
 
 
 ```
@@ -82,10 +86,17 @@ romSpecies$regen %>%
   geom_smooth(method = "loess", se=F,span=0.3)+ # Add smoothed line
   ylab("Prorated Area (ha)")+ # Set y-axis label
   xlab("Disturbance year")+ # Set x-axis label
-  ggtitle(label="SAF prorated regenerated area by year", subtitle = "Across all BGC units, Omineca Region")
+  ggtitle(label="SAF prorated regenerated area by year", subtitle = "Across all BGC units, Omineca Region")+
+  xlim(1988,2018) # set same x axis limits as previous graphs
 
 
 
 ```
 
 It looks like the dataset is missing data for years after around 2010.  We see the same downward trend as planting and billed volume from ~1995 to 2010.  There was likely an increase in Bl regenerated area after 2010, but the data are likely incomplete.  
+
+### Next steps
+Look at actual harvest billing data
+Look at RESULTS planting dataset to get number of SAF planted per year
+Generate figures by BGC unit
+Other?
